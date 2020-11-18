@@ -1,5 +1,4 @@
-import styled from "styled-components";
-import { keyframes } from "styled-components";
+import styled,{keyframes} from "styled-components";
 
 const opacityAnimation = keyframes`
  0% {left:1500px }
@@ -11,8 +10,8 @@ const opacityAnimation = keyframes`
 
 export const AnnouncementContainer = styled.div`
   position:absolute;
+  z-index:2;
   top:200px;
-
   width: 250px;
   height: 100px;
   border: none;

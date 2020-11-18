@@ -12,3 +12,8 @@ export const itemLoading = createSelector(
     [Item],
     (data)=>data.loading,
 )
+
+export const selectInGallery = createSelector(
+  [Item],
+  (data)=>data.inGallery
+)

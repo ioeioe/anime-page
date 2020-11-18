@@ -1,10 +1,5 @@
 import { AccountTypes } from "./account.types";
-import {
-  addItemToCollections,
-  removeItemFromCollections,
-} from "./account.utils";
 const INITIAL_STATE = {
-  userCollections: [],
   hidden: true,
 };
 

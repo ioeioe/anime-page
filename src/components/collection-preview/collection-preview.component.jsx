@@ -28,15 +28,15 @@ const CollectionPreview = ({ collections,fetchCollectionPreviewStart,loading }) 
         <CollectionTitle>Anime mới cập nhật</CollectionTitle>
       </CollectionTitleContainer>
       <CollectionGrid>
-        {collections.map((item, index) => (
-          <AnimeItem key={item.mal_id} item={item} index={index} routeName={item.routeName}></AnimeItem>
+        {collections.map((item) => (
+          <AnimeItem key={item.mal_id} item={item} routeName={item.routeName}></AnimeItem>
         ))}
       </CollectionGrid>
       <ViewmoreContainer>
         <Viewmore
           to={{
             pathname: "danh-sach/page/1",
-            state: { listname: "danh sach" },
+            state: { listname: "danh sach"},
           }}
         >
           Xem thêm

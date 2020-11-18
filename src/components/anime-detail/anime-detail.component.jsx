@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import {createStructuredSelector} from 'reselect';
@@ -19,49 +19,114 @@ import {
   AnimeCategory,
   ButtonContainer,
   AnimeDetailHeader,
+  PageNotFoundImage,
+  PageNotFoundButton,
+  TrackingButton,
+  TrackingIcon,
+  AnimeImageContainer
 } from "./anime-detail.styles";
 
-import Announcement from "../announcement/annoucement.component";
+import image from "../../images-source/rem.png"
+import BackgroundUpdate from '../background-update/background-update.component';
 
 import { selectCurrentUser } from "../../redux/user/user.selector";
-import { addItemToCollections } from "../../redux/account/account.actions";
 import { showingAnnounce } from "../../redux/announce/announce.actions";
-import { selectAnnounceHidden } from "../../redux/announce/announce.selector";
 import {updateTime} from '../../redux/collection/collection.actions';
 import {selectItem,itemLoading} from '../../redux/item/item.selector';
+import {fetchItemStart} from '../../redux/item/item.actions';
+import {addItemToGallery,removeItemFromGallery} from '../../redux/anime-track/anime-track.actions';
+import {selectGallery} from '../../redux/anime-track/anime-track.selector';
+
 const AnimeDetail = ({
-  item,
+  id,
   loading,
-  addItemToCollections,
   history,
   showingAnnounce,
-  hidden,
   currentUser,
   updateTime,
+  item,
+  fetchItemStart,
+  addItemToGallery,
+  removeItemFromGallery,
+  gallery,
 }) => {
+  useEffect(()=>{
+    fetchItemStart(id);
+  },[id])
+  let inGallery = false;
+  for(let i=0;i<gallery.length;i++)
+  {
+    if(gallery[i].mal_id==id)
+    {
+      inGallery=true;
+      break;
+    }
+  }
   history.location.pathname = "/";
   const regex = /\s/gi;
   const addItem = async () => {
     try {
-      //await addItemToCollections(item);
       if(!currentUser){
         showingAnnounce({check:false,title:"Xin chào",para:"Bạn cần phải đăng nhập để thực hiện chức năng này"});
       }
       else{
+        addItemToGallery(item,currentUser.id);
         showingAnnounce({check:true,title:"Xin chào",para:"Đã thêm vào danh sách"});
       }
-
-    } catch (error) {}
+    } catch (error) {
+      alert(error.message);
+    }
   };
-  console.log("asd");
-  return loading?null:(
+  const removeItem =async()=>{
+    try{
+      removeItemFromGallery(item,currentUser.id);
+      showingAnnounce({check:true,title:"Đã bỏ theo dõi"})
+    }
+    catch(error)
+    {
+      alert(error.message);
+    }
+  }
+  return loading?
+  (
+    <BigContainer>     
+      <AnimeDetailHeader></AnimeDetailHeader>
+      <AnimeDetailContainer>
+        <AnimeImage></AnimeImage>
+        <AnimeInfoContainer>
+          <AnimeTitle></AnimeTitle>
+          <PanelContainer>
+          </PanelContainer>
+          <PanelContainer>
+            <AnimeEpisodeContainer></AnimeEpisodeContainer>
+          </PanelContainer>
+        </AnimeInfoContainer>
+      </AnimeDetailContainer>
+      <PanelContainer>
+      </PanelContainer>
+    </BigContainer>
+  )
+  :item.mal_id?(
     <BigContainer>
-      {!hidden?
-      <Announcement />:null
-      }
       <AnimeDetailHeader>{item.title}</AnimeDetailHeader>
       <AnimeDetailContainer>
+        <AnimeImageContainer>
         <AnimeImage src={item.image_url} alt="image name"></AnimeImage>
+        {inGallery?(
+        <TrackingButton onClick={() => removeItem()}>
+              <TrackingIcon className="fa fa-bookmark"></TrackingIcon>
+              Bỏ theo dõi
+            </TrackingButton>):(<TrackingButton onClick={() => addItem()}>
+              <TrackingIcon className="fa fa-bookmark"></TrackingIcon>
+              Theo dõi
+            </TrackingButton>)
+      }
+          <ButtonContainer>
+            <AnimeDetailButton>Xem Anime</AnimeDetailButton>
+                <AnimeDetailButton onClick={()=>updateTime(item.mal_id)}>Cập nhật</AnimeDetailButton>
+          </ButtonContainer>
+        
+        </AnimeImageContainer>
         <AnimeInfoContainer>
           <AnimeTitle>{item.title}</AnimeTitle>
           <PanelContainer>
@@ -78,28 +143,43 @@ const AnimeDetail = ({
                       .toLowerCase()
                       .replace(regex, "-")}/page/${1}
                     `,
-                    state: { name: category.name, listname: "the loai" },
+                    state: { value: category, listname: "the loai" },
                   }}
                 >
                   {category.name}
                 </AnimeCategory>
               ))}
             </AnimeCategoryContainer>
-            <AnimeInfo>Dạng anime: {item.type}</AnimeInfo>
-            <AnimeInfo>Season: Summer</AnimeInfo>
-            <AnimeInfo>Năm: {item.airing_start.split("-")[0]}</AnimeInfo>
+            <AnimeInfo>Dạng anime: <AnimeCategory  
+                 key={item.type}
+                  to={{
+                    pathname: `tv-movie/${item.type
+                      .toLowerCase()
+                      .replace(regex, "-")}/page/${1}
+                    `,
+                    state: { value: item.type, listname:  "tv movie" },
+                  }}>{item.type}</AnimeCategory></AnimeInfo>
+            <AnimeInfo>Season: <AnimeCategory  key={item.season}
+                  to={{
+                    pathname: `season/${item.season
+                      .toLowerCase()
+                      .replace(regex, "-")}/page/${1}
+                    `,
+                    state: { value: item.season, listname: "season" },
+                  }}>{item.season}</AnimeCategory></AnimeInfo>
+            <AnimeInfo>Năm: <AnimeCategory
+             key={item.year}
+                  to={{
+                    pathname: `nam/${item.year}/page/${1}
+                    `,
+                    state: { value: item.year, listname: "nam" },
+                  }}>{item.year}</AnimeCategory></AnimeInfo>
             <AnimeInfo>Lượt xem: {item.members}</AnimeInfo>
           </PanelContainer>
           <PanelContainer>
             <AnimeEpisodeContainer></AnimeEpisodeContainer>
           </PanelContainer>
-          <ButtonContainer>
-            <AnimeDetailButton onClick={() => addItem()}>
-              Thêm vào danh sách
-            </AnimeDetailButton>
-            <AnimeDetailButton>Xem Anime</AnimeDetailButton>
-                <AnimeDetailButton onClick={()=>updateTime(item.mal_id)}>Cập nhật</AnimeDetailButton>
-          </ButtonContainer>
+         <BackgroundUpdate item={item}></BackgroundUpdate>
         </AnimeInfoContainer>
       </AnimeDetailContainer>
       <PanelContainer>
@@ -107,20 +187,28 @@ const AnimeDetail = ({
         <AnimeContentPara>{item.synopsis}</AnimeContentPara>
       </PanelContainer>
     </BigContainer>
+  ):(<AnimeDetailContainer>
+  <PageNotFoundImage src={image} alt="image">
+
+  </PageNotFoundImage>
+      <PageNotFoundButton to={{pathname:"/"}}>Quay lại trang chủ</PageNotFoundButton>
+      </AnimeDetailContainer>
   );
 };
 
 const mapStateToProps =  createStructuredSelector({
-  item:selectItem,
   loading:itemLoading,
-  hidden: selectAnnounceHidden,
+  item:selectItem,
   currentUser:selectCurrentUser,
+  gallery:selectGallery,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addItemToCollections: (item) => dispatch(addItemToCollections(item)),
   showingAnnounce: (announceInfo) => dispatch(showingAnnounce(announceInfo)),
   updateTime:(id)=>dispatch(updateTime(id)),
+  fetchItemStart:(id)=>dispatch(fetchItemStart(id)),
+  addItemToGallery:(item,userId)=>dispatch(addItemToGallery(item,userId)),
+  removeItemFromGallery:(item,userId)=>dispatch(removeItemFromGallery(item,userId)),
 });
 
 export default withRouter(

@@ -18,9 +18,18 @@ export const AccountIconImage = styled.img`
   height: 50px;
   border: none;
   border-radius: 50%;
+  margin-left:85px;
 `;
 
-export const AccountIconDisplayname = styled.p`
- 
-  
-`;
+
+export const AccountIconSpan=styled.div`
+  position:absolute;
+  top:43px;
+  left:1180px;
+  background-color:black;
+  width:20px;
+  height:20px;
+  border:none;
+  border-radius:50%;
+  text-align:center;
+`

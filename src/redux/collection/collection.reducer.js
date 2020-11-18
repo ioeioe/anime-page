@@ -2,12 +2,17 @@ import { CollectionType } from "./collection.types";
 
 const INITIAL_STATE = {
   collections: [],
-   loading: false,
-  viewRanking:[],
-  scoreRanking:[],
+  viewRating:[],
+  scoreRating:[],
   searchCollection:[],
-  viewRankingLoading:false,
-  scoreRankingLoading:false,
+  incomingCollection:[],
+  firstDocument:null,
+  lastDocument:null,
+  previousPage:0,
+  loading: false,
+  viewRatingLoading:false,
+  scoreRatingLoading:false,
+  incomingLoading:false,
   error: null,
 };
 
@@ -39,7 +44,10 @@ const CollectionReducer = (state = INITIAL_STATE, action) => {
     case CollectionType.FETCH_COLLECTIONS_OVERVIEW_SUCCESS:
       return {
         ...state,
-        collections: action.payload,
+        collections: action.payload.collectionMap,
+        firstDocument:action.payload.firstDocument,
+        lastDocument:action.payload.lastDocument,
+        previousPage:action.payload.previousPage,
         loading: false,
         error: null,
       };
@@ -49,41 +57,49 @@ const CollectionReducer = (state = INITIAL_STATE, action) => {
         loading: false,
         error: action.payload,
       };
-        case CollectionType.FETCH_COLLECTIONS_VIEW_RANKING_START:
+        case CollectionType.FETCH_DAY_VIEW_RATING_START:
+           case CollectionType.FETCH_WEEK_VIEW_RATING_START:
+              case CollectionType.FETCH_MONTH_VIEW_RATING_START:
+                 case CollectionType.FETCH_SEASON_VIEW_RATING_START:
+                    case CollectionType.FETCH_YEAR_VIEW_RATING_START:
       return {
         ...state,
-
-        viewRankingLoading: true,
+        viewRatingLoading: true,
       };
-    case CollectionType.FETCH_COLLECTIONS_VIEW_RANKING_SUCCESS:
+    case CollectionType.FETCH_VIEW_RATING_SUCCESS:
       return {
         ...state,
-        viewRanking: action.payload,
-        viewRankingLoading: false,
+        viewRating: action.payload,
+        viewRatingLoading: false,
         error: null,
       };
-    case CollectionType.FETCH_COLLECTIONS_VIEW_RANKING_FAILURE:
+    case CollectionType.FETCH_VIEW_RATING_FAILURE:
       return {
         ...state,
-        viewRankingLoading: false,
+        viewRatingLoading: false,
         error: action.payload,
       };
-             case CollectionType.FETCH_COLLECTIONS_SCORE_RANKING_START:
+             case CollectionType.FETCH_DAY_SCORE_RATING_START:
+                   case CollectionType.FETCH_WEEK_SCORE_RATING_START:
+                         case CollectionType.FETCH_MONTH_SCORE_RATING_START:
+                               case CollectionType.FETCH_SEASON_SCORE_RATING_START:
+                                     case CollectionType.FETCH_YEAR_SCORE_RATING_START:
+
       return {
         ...state,
-        scoreRankingLoading: true,
+        scoreRatingLoading: true,
       };
-    case CollectionType.FETCH_COLLECTIONS_SCORE_RANKING_SUCCESS:
+    case CollectionType.FETCH_SCORE_RATING_SUCCESS:
       return {
         ...state,
-        scoreRanking: action.payload,
-        scoreRankingLoading: false,
+        scoreRating: action.payload,
+        scoreRatingLoading: false,
         error: null,
       };
-    case CollectionType.FETCH_COLLECTIONS_SCORE_RANKING_FAILURE:
+    case CollectionType.FETCH_SCORE_RATING_FAILURE:
       return {
         ...state,
-        scoreRankingLoading: false,
+        scoreRatingLoading: false,
         error: action.payload,
       };
           case CollectionType.FETCH_SEARCH_SUCCESS:
@@ -97,6 +113,25 @@ const CollectionReducer = (state = INITIAL_STATE, action) => {
         ...state,     
         error: action.payload,
       };
+          case CollectionType.FETCH_INCOMING_START:
+        return {
+          ...state,
+          incomingLoading:true,
+        }
+       
+      case CollectionType.FETCH_INCOMING_SUCCESS:
+        return {
+          ...state,
+          incomingCollection:action.payload,
+          incomingLoading:false,
+        }
+            case CollectionType.FETCH_INCOMING_FAILURE:
+        return {
+          ...state,
+          error:action.payload,
+          incomingLoading:false,
+        }
+       
     default:
       return state;
   }

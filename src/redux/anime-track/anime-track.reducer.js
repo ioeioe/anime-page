@@ -1,41 +1,24 @@
 import { TrackingTypes } from "./anime-track.types";
-
 const INITIAL_STATE = {
-    indexArray:[],
+    gallery:[],
     error:"",
 };
 
 const TrackingReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-      case TrackingTypes.GET_USER_TRACKING_SUCCESS:
+      case TrackingTypes.GET_USER_GALLERY_SUCCESS:
           return{
-              indexArray:action.payload,
-              error:"",
-              ...state,
+               ...state,
+              gallery:action.payload,
+              error:"", 
           }
-            case TrackingTypes.GET_USER_TRACKING_FAILURE:
+            case TrackingTypes.GET_USER_GALLERY_FAILURE:
           return{
-              error:"",
-
-              ...state,
+            ...state,
+              error:action.payload,    
           }
-    case TrackingTypes.ADD_ITEM:
-      return {
-        ...state,
-  
-      };
-    case TrackingTypes.REMOVE_ITEM:
-        return{
-            ...state,
-        }
-    case TrackingTypes.CLEAR_ALL:
-        return{
-            ...state,
-        }
- 
     default:
       return state;
-        
   }
 };
 

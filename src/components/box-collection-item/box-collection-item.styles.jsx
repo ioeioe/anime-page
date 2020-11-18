@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+
 export const BoxCollectionItemContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -14,7 +15,7 @@ export const BoxCollectionItemImage = styled.img`
   height: 80px;
 `;
 
-export const BoxCollectionItemTitle = styled.p`
+export const BoxCollectionItemTitle = styled(Link)`
   width: 100px;
   color: white;
   cursor: pointer;

@@ -11,12 +11,16 @@ export const toggleMostviewHidden = () => ({
   type: DirectoryType.TOGGLE_MOST_VIEW_HIDDEN,
 });
 
-export const toggleMostcommentHidden = () => ({
-  type: DirectoryType.TOGGLE_MOST_COMMENT_HIDDEN,
+export const toggleMostscoreHidden = () => ({
+  type: DirectoryType.TOGGLE_MOST_SCORE_HIDDEN,
 });
 
 export const toggleYearHidden = () => ({
   type: DirectoryType.TOGGLE_YEAR_HIDDEN,
+});
+
+export const toggleSeasonHidden = () => ({
+  type: DirectoryType.TOGGLE_SEASON_HIDDEN,
 });
 
 export const toggleTvMovieHidden = () => ({

@@ -1,6 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+
+
 import {
   BoxCollectionItemContainer,
   BoxCollectionItemOrder,
@@ -11,25 +13,19 @@ import {
   BoxCollectionItemDelete,
 } from "./box-collection-item.styles";
 
-import {
-  selectIndexOfItem,
-  selectCollections,
-} from "../../redux/collection/collection.selector";
 
-import { removeItemFromCollections } from "../../redux/account/account.actions";
+
+import { removeItemFromGallery } from "../../redux/anime-track/anime-track.actions";
 
 const BoxCollectionItem = ({
   item,
   order,
   history,
-  removeItem,
-  collection,
+  removeItemFromGallery,
+
 }) => {
-  const style = {
-    color: "orange",
-  };
-  let index = collection.findIndex((i) => i.mal_id === item.mal_id);
-  const regex = /\s/gi;
+  const { title, image_url, score, episodes,mal_id,routeName } = item;
+  const style={color:"orange"}
   return (
     <BoxCollectionItemContainer>
       <BoxCollectionItemOrder>{order}</BoxCollectionItemOrder>
@@ -38,11 +34,9 @@ const BoxCollectionItem = ({
         alt="item image"
       ></BoxCollectionItemImage>
       <BoxCollectionItemTitle
-        onClick={() =>
-          history.push(
-            `anime/${index}/${item.title.toLowerCase().replace(regex, "-")}`
-          )
-        }
+          to={{
+        pathname: `anime/${mal_id}/${routeName}`,
+        }}
       >
         {item.title}
       </BoxCollectionItemTitle>
@@ -54,19 +48,17 @@ const BoxCollectionItem = ({
         <span className="fa fa-star" style={style}></span>
         <span className="fa fa-star" style={style}></span>
       </BoxCollectionItemVote>
-      <BoxCollectionItemDelete onClick={() => removeItem(item)}>
+      <BoxCollectionItemDelete onClick={() => removeItemFromGallery(item)}>
         <span className="fa fa-trash"></span>
       </BoxCollectionItemDelete>
     </BoxCollectionItemContainer>
   );
 };
 
-const mapStateToProps = (state) => ({
-  collection: selectCollections(state),
-});
+
 const mapDispatchToProps = (dispatch) => ({
-  removeItem: (item) => dispatch(removeItemFromCollections(item)),
+  removeItemFromGallery: (item) => dispatch(removeItemFromGallery(item)),
 });
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(BoxCollectionItem)
+  connect(null, mapDispatchToProps)(BoxCollectionItem)
 );

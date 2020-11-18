@@ -6,17 +6,19 @@ import {
 } from "./category-item.styles";
 
 const CategoryItem = ({ label, value, listname }) => {
-  console.log(value);
   const regex = /\s/gi;
   let pathname="";
   if(value.name)
   {
     pathname=value.name.toLowerCase().replace(regex,"-");
   }
+  else if(typeof(value)==="number")
+  {
+    pathname=value;
+  }
   else{
      pathname=value.toLowerCase().replace(regex,"-");
   }
-  
   return (
     <CategoryItemContainer
       to={{

@@ -3,14 +3,16 @@ const INITIAL_STATE = {
   categories: [],
   status: [],
   most_view: [],
-  most_comment: [],
+  most_score: [],
   year: [],
+  season:[],
   tv_movie: [],
   categoriesHidden: true,
   statusHidden: true,
   yearHidden: true,
+  seasonHidden:true,
   mostviewHidden: true,
-  mostcommentHidden: true,
+  mostscoreHidden: true,
   tvmovieHidden: true,
 };
 const category = [
@@ -326,7 +328,7 @@ const Mostview = [
   { Năm: "year" },
   { "Tất cả": "all" },
 ];
-const Mostcomment = [
+const Mostscore = [
   { Ngày: "day" },
   { Tuần: "week" },
   { Tháng: "month" },
@@ -334,6 +336,12 @@ const Mostcomment = [
   { Năm: "year" },
   { "Tất cả": "all" },
 ];
+const Season = [
+  {Xuân:"spring"},
+  {Hạ:"summer"},
+  {Thu:"fall"},
+  {Đông:"winter"},
+]
 const Year = [
   { 2020: 2020 },
   { 2019: 2019 },
@@ -357,8 +365,9 @@ const DirectoryReducer = (state = INITIAL_STATE, action) => {
         categories: category,
         statusHidden: true,
         mostviewHidden: true,
-        mostcommentHidden: true,
+        mostscoreHidden: true,
         yearHidden: true,
+        seasonHidden:true,
         tvmovieHidden: true,
         categoriesHidden: !state.categoriesHidden,
       };
@@ -367,8 +376,9 @@ const DirectoryReducer = (state = INITIAL_STATE, action) => {
         ...state,
         status: Status,
         mostviewHidden: true,
-        mostcommentHidden: true,
+        mostscoreHidden: true,
         yearHidden: true,
+          seasonHidden:true,
         tvmovieHidden: true,
         categoriesHidden: true,
         statusHidden: !state.statusHidden,
@@ -379,32 +389,47 @@ const DirectoryReducer = (state = INITIAL_STATE, action) => {
         most_view: Mostview,
         statusHidden: true,
         yearHidden: true,
-        mostcommentHidden: true,
+          seasonHidden:true,
+        mostscoreHidden: true,
         tvmovieHidden: true,
         categoriesHidden: true,
         mostviewHidden: !state.mostviewHidden,
       };
-    case DirectoryType.TOGGLE_MOST_COMMENT_HIDDEN:
+    case DirectoryType.TOGGLE_MOST_SCORE_HIDDEN:
       return {
         ...state,
-        most_comment: Mostcomment,
+        most_score: Mostscore,
         statusHidden: true,
         yearHidden: true,
+          seasonHidden:true,
         tvmovieHidden: true,
         categoriesHidden: true,
         mostviewHidden: true,
-        mostcommentHidden: !state.mostcommentHidden,
+        mostscoreHidden: !state.mostscoreHidden,
       };
     case DirectoryType.TOGGLE_YEAR_HIDDEN:
       return {
         ...state,
         year: Year,
         statusHidden: true,
+        seasonHidden:true,
         mostviewHidden: true,
-        mostcommentHidden: true,
+        mostscoreHidden: true,
         tvmovieHidden: true,
         categoriesHidden: true,
         yearHidden: !state.yearHidden,
+      };
+        case DirectoryType.TOGGLE_SEASON_HIDDEN:
+      return {
+        ...state,
+        season:Season,
+        yearHidden: true,
+        statusHidden: true,     
+        mostviewHidden: true,
+        mostscoreHidden: true,
+        tvmovieHidden: true,
+        categoriesHidden: true,
+           seasonHidden:!state.seasonHidden,
       };
     case DirectoryType.TOGGLE_TV_MOVIE_HIDDEN:
       return {
@@ -412,8 +437,9 @@ const DirectoryReducer = (state = INITIAL_STATE, action) => {
         tv_movie: TV_Movie,
         statusHidden: true,
         mostviewHidden: true,
-        mostcommentHidden: true,
+        mostscoreHidden: true,
         yearHidden: true,
+        seasonHidden:true,
         categoriesHidden: true,
         tvmovieHidden: !state.tvmovieHidden,
       };
@@ -423,8 +449,9 @@ const DirectoryReducer = (state = INITIAL_STATE, action) => {
         categoriesHidden: true,
         statusHidden: true,
         mostviewHidden: true,
-        mostcommentHidden: true,
+        mostscoreHidden: true,
         yearHidden: true,
+        seasonHidden:true,
         tvmovieHidden: true,
       };
     default:
@@ -433,8 +460,9 @@ const DirectoryReducer = (state = INITIAL_STATE, action) => {
         categories: category,
         status: Status,
         most_view: Mostview,
-        most_comment: Mostcomment,
+        most_score: Mostscore,      
         year: Year,
+        season:Season,
         tv_movie: TV_Movie,
       };
   }

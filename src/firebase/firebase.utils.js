@@ -2,7 +2,11 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
 import 'firebase/storage';
-import {EmailSignInStart} from '../redux/user/user.actions';
+import { FireSQL } from 'firesql';
+import 'firesql/rx';
+import {getUserGallerySuccess} from '../redux/anime-track/anime-track.actions';
+import {fetchCommentSuccess} from '../redux/comment/comment.actions';
+import {store} from '../redux/store';
 
 var firebaseConfig = {
   apiKey: "AIzaSyA7iJcRdZ3En5IC0yhR8Mx38PQcQASLK2Q",
@@ -18,6 +22,7 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 export const storage = firebase.storage();
 export const auth = firebase.auth();
+export const fireSql = new FireSQL(firebase.firestore());
 export const firestore = firebase.firestore();
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
@@ -38,10 +43,8 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   if (!userAuth) {
     return;
   }
-
   const userRef = firestore.doc(`users/${userAuth.uid}`);
   const snapShot = await userRef.get();
-  console.log(userAuth);
   if (!snapShot.exists) {
     const { email } = userAuth;
     let firstName="",lastName="",imageUrl="";
@@ -57,9 +60,9 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
        imageUrl=userAuth.photoURL;
     }
     const createAt = new Date();
-    
+    const id=userAuth.uid;
     try {
-      await userRef.set({ email, createAt,firstName,lastName,imageUrl  });
+      await userRef.set({ id,email, createAt,firstName,lastName,imageUrl  });
     } catch (error) {
       console.log(error.message);
     }
@@ -102,7 +105,7 @@ export const upLoadImageTask= (imageAsFile,userId)=>{
 //   });
 // };
 export const addCollectionToFireStore = async(CollectionKey, objectsToAdd) => {
-  console.log("asd");
+ 
   const collectionRef = firestore.collection(CollectionKey);
     const batch = firestore.batch();
       const regex = /\s/gi;
@@ -114,13 +117,98 @@ export const addCollectionToFireStore = async(CollectionKey, objectsToAdd) => {
   return await batch.commit(); 
 };
 
+export const addItemToGallery = async(userAuth,item)=>{
+  const collectionRef = firestore.collection("users").doc(userAuth.id).collection("gallery");
+  const batch = firestore.batch();
+  const newDocRef = collectionRef.doc();
+  item.createAt =new Date();
+  batch.set(newDocRef,item);
+  return await batch.commit();
+}
+export const removeItemFromGallery = async(userAuth,item)=>{
+  const batch= firestore.batch();
+  const docRef = await firestore.collection("users").doc(userAuth.id).collection("gallery").where("mal_id","==",item.mal_id).get();
+  docRef.forEach(doc=>{
+    batch.delete(doc.ref);
+  })
+  return await batch.commit();
+
+
+}
+export const getUserGallery = async(id)=>{
+    return new Promise((resolve,reject)=>{  
+      firestore.collection("users").doc(id).collection("gallery").orderBy("createAt","desc").onSnapshot(snapshot=>{
+         let gallery = [];
+        console.log("gallery changing");
+      snapshot.forEach(doc=>{
+       
+        gallery.push(doc.data());
+        
+      })
+      console.log(gallery);
+      store.dispatch(getUserGallerySuccess(gallery));
+      resolve();
+    },reject)
+    })
+}
+
 export const updateItemTime = async(id)=>{
   const collectionRef = firestore.collection("collections");
   const collectionSnapshot = await collectionRef.where("mal_id","==",id).get();
   collectionSnapshot.forEach(async (doc)=>{
     const docRef = await firestore.collection("collections").doc(doc.id);
     docRef.update({
-      updateTime:new Date
+      updateTime:new Date()
     })
   })
 }
+export const updateItemBackground = async(id,url)=>{
+   const collectionRef = firestore.collection("collections");
+  const collectionSnapshot = await collectionRef.where("mal_id","==",id).get();
+  collectionSnapshot.forEach(async (doc)=>{
+    const docRef = await firestore.collection("collections").doc(doc.id);
+    docRef.update({
+      background_url:url,
+    })
+  })
+}
+
+export const PostCommentToFirestore = async (userImage,userName,animeId,commentText)=>{
+  const CollectionSnapshot = await firestore.collection('collections').where("mal_id","==",animeId).get();
+   CollectionSnapshot.forEach(async(doc)=>{
+    const CollectionRef = await firestore.collection("collections").doc(doc.id).collection("comments");
+    const batch = firestore.batch();
+  const newDocRef = CollectionRef.doc();
+  let postAt = new Date();
+  batch.set(newDocRef,{userImage,userName,commentText,postAt});
+  batch.commit();
+  })
+}
+export const GetAnimeComments =  (mal_id)=>{
+
+    return new Promise(async(resolve,reject)=>{  
+    let id="";
+    const snapshot = firestore.collection("collections").where("mal_id","==",mal_id).get();
+    (await snapshot).docs.forEach(doc=>{
+      id=doc.id;
+    })
+      firestore.collection("collections").doc(id).collection("comments").orderBy("postAt","desc").onSnapshot(snapshot=>{
+         let comments = [];
+      snapshot.forEach(doc=>{     
+        comments.push(doc.data());
+      })
+      console.log(comments);
+      store.dispatch(fetchCommentSuccess(comments));
+      resolve();
+    },reject)
+    })
+
+}
+
+// export const pushGalleryToFireStore = (userId,gallery)=>{
+//   console.log("PUSH GALLERY FIRESTORE");
+//   const userRef = firestore.collection("users").doc(userId);
+//   userRef.update({
+//     gallery:gallery
+//   })
+// }

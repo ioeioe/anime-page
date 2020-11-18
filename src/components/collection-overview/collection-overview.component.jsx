@@ -1,5 +1,6 @@
 import React,{useEffect} from "react";
 import { connect } from "react-redux";
+
 import {createStructuredSelector} from "reselect";
 
 import {
@@ -7,20 +8,27 @@ import {
   CollectionTitle,
   CollectionTitleContainer,
   CollectionGrid,
+  PageNumber,
+  PageContainer,
+  CurrentPage,
 } from "./collection-overview.styles";
+
 
 import AnimeItem from "../anime-item/anime-item.component";
 import Spinner from "../spinner/spinner.component";
 
 import {fetchCollectionOverviewStart} from '../../redux/collection/collection.actions';
-import { selectCollections,isLoading } from "../../redux/collection/collection.selector";
+import { selectCollections,isLoading,selectFirstDocument,selectLastDocument } from "../../redux/collection/collection.selector";
 
 
-const CollectionOverview = React.memo(({loading,fetchCollectionOverviewStart,collections,type}) => {
+
+const CollectionOverview = React.memo(({loading,fetchCollectionOverviewStart,collections,type,url,currentPage}) => {
   useEffect(()=>{
-    console.log(type);
       fetchCollectionOverviewStart(type);
   },[type])
+  let urlArr = url.split('/');
+  urlArr.splice(urlArr.length-1,1);
+  let newUrl = urlArr.join('/');
   return loading?<Spinner />:
  (<CollectionOverviewContainer>
       <CollectionTitleContainer>
@@ -33,6 +41,17 @@ const CollectionOverview = React.memo(({loading,fetchCollectionOverviewStart,col
           <AnimeItem key={item.mal_id} item={item}></AnimeItem>
         ))}
       </CollectionGrid>
+      <PageContainer>
+        {
+          currentPage==1?null:<PageNumber to={{
+        pathname: `${newUrl}/${parseInt(currentPage)-1}`,
+      }}>{currentPage-1}</PageNumber>
+        }
+        <CurrentPage>{currentPage}</CurrentPage>
+        <PageNumber to={{
+        pathname: `${newUrl}/${parseInt(currentPage)+1}`,
+      }}>{parseInt(currentPage)+1} </PageNumber>
+      </PageContainer>
     </CollectionOverviewContainer>
   );
 });
@@ -40,6 +59,8 @@ const CollectionOverview = React.memo(({loading,fetchCollectionOverviewStart,col
 const mapStateToProps = createStructuredSelector({
   loading:isLoading,
   collections:selectCollections,
+  firstDocument:selectFirstDocument,
+  lastDocument:selectLastDocument,
 });
 
 const mapDispatchToProps = (dispatch)=>({

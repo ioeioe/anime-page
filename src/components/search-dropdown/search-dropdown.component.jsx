@@ -17,7 +17,7 @@ const SearchDropdown = ({ searchCollection,searchText }) => {
     <SearchDropdownContainer>
       {searchCollection.length ? (
         <SearchDropdownList>
-          {searchCollection.map((item) => (
+          {searchCollection.slice(0,6).map((item) => (
             <SearchItem key={item.mal_id} item={item}></SearchItem>
           ))}
         </SearchDropdownList>
@@ -27,7 +27,7 @@ const SearchDropdown = ({ searchCollection,searchText }) => {
       <SearchDropdownButton
         to={{
           pathname: `tim-kiem/keyword=${searchText}/page/${1}`,
-          state: { listname: "tim kiem", name: searchText },
+          state: { listname: "tim kiem", value: searchText },
         }}
       >
         Enter

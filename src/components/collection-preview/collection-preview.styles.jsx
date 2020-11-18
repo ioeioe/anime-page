@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 export const CollectionPreviewContainer = styled.div`
-  width: 70%;
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -10,11 +10,11 @@ export const CollectionPreviewContainer = styled.div`
 
 export const CollectionTitleContainer = styled.div`
   width: 100%;
-  height: 50px;
-  background-color: black;
+  height:50px;
 `;
 export const CollectionTitle = styled.p`
   color: white;
+  font-family:Tahoma;
 `;
 
 export const CollectionGrid = styled.div`
@@ -25,13 +25,10 @@ export const CollectionGrid = styled.div`
 `;
 export const ViewmoreContainer =styled.div`
   width:100%;
-  display:flex;
-  justify-content:flex-end;
+
 `
 
 export const Viewmore = styled(Link)`
-  width: auto;
-  height: auto;
-
-  color: orange;
+  float:right;
+  color: #22EAE1;
 `;

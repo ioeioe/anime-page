@@ -15,14 +15,21 @@ export const selectMostviewHidden = createSelector(
   [Directory],
   (data) => data.mostviewHidden
 );
-export const selectMostcommentHidden = createSelector(
+export const selectMostscoreHidden = createSelector(
   [Directory],
-  (data) => data.mostcommentHidden
+  (data) => data.mostscoreHidden
 );
+
 export const selectYearHidden = createSelector(
   [Directory],
   (data) => data.yearHidden
 );
+
+export const selectSeasonHidden = createSelector(
+  [Directory],
+  (data) => data.seasonHidden
+);
+
 export const selectTvMovieHidden = createSelector(
   [Directory],
   (data) => data.tvmovieHidden
@@ -39,12 +46,21 @@ export const selectMostviewList = createSelector(
   [Directory],
   (data) => data.most_view
 );
-export const selectMostcommentList = createSelector(
+export const selectMostscoreList = createSelector(
   [Directory],
-  (data) => data.most_comment
+  (data) => data.most_score
 );
 
-export const selectYearList = createSelector([Directory], (data) => data.year);
+export const selectYearList = createSelector(
+  [Directory],
+  (data) => data.year
+);
+
+export const selectSeasonList = createSelector(
+  [Directory],
+  (data) => data.season
+);
+
 export const selectTvMovieList = createSelector(
   [Directory],
   (data) => data.tv_movie

@@ -4,6 +4,7 @@ import {
   AccountIconContainer,
   AccountIconImage,
   AccountIconDisplayname,
+  AccountIconSpan
 } from "./account-icon.styles";
 import logo from '../../images-source/logo.png';
 import { toggleAccountDropdown } from "../../redux/account/account.actions";
@@ -16,10 +17,9 @@ const AccountIcon = ({ user, toggleAccountDropdown }) => {
       <AccountIconImage src={user.imageUrl} alt="profile image"></AccountIconImage>):
       <AccountIconImage src={logo} alt="profile image"></AccountIconImage>
   }
-      <AccountIconDisplayname>
-        {user.firstName || user.lastName ? user.firstName +" "+ user.lastName : null}
-      </AccountIconDisplayname>
+      <AccountIconSpan>
       <span className="fa fa-angle-down"></span>
+      </AccountIconSpan>
     </AccountIconContainer>
   );
 };

@@ -8,42 +8,48 @@ import {
   selectCategoryHidden,
   selectStatusHidden,
   selectMostviewHidden,
-  selectMostcommentHidden,
+  selectMostscoreHidden,
   selectYearHidden,
+  selectSeasonHidden,
   selectTvMovieHidden,
   selectCategoryList,
   selectStatusList,
   selectMostviewList,
   selectYearList,
+  selectSeasonList,
   selectTvMovieList,
-  selectMostcommentList,
+  selectMostscoreList,
 } from "../../redux/directory/directory.selector";
 import {
   toggleCategoryHidden,
   toggleStatusHidden,
   toggleMostviewHidden,
   toggleYearHidden,
+  toggleSeasonHidden,
   toggleTvMovieHidden,
-  toggleMostcommentHidden,
+  toggleMostscoreHidden,
 } from "../../redux/directory/directory.actions";
 const Directory = ({
   toggleCategoryHidden,
   toggleStatusHidden,
   toggleMostviewHidden,
   toggleYearHidden,
+  toggleSeasonHidden,
   toggleTvMovieHidden,
-  toggleMostcommentHidden,
+  toggleMostscoreHidden,
   categoryHidden,
   statusHidden,
   mostViewHidden,
-  mostCommentHidden,
+  mostScoreHidden,
   yearHidden,
+  seasonHidden,
   tvMovieHidden,
   categoryList,
   statusList,
   mostviewList,
-  mostCommentList,
+  mostscoreList,
   yearList,
+  seasonList,
   tvmovieList,
 }) => {
   return (
@@ -82,29 +88,29 @@ const Directory = ({
       <DirectoryButton
         key={3}
         handleClick={toggleMostviewHidden}
-        label="XEM NHIỀU"
+        label="XEM NHIỀU NHẤT"
       ></DirectoryButton>
       {mostViewHidden ? null : (
         <Dropdown
           key="d2"
           list={mostviewList}
-          name="xem nhieu"
-          column={5}
+          name="most view"
+          column={3}
           yPos={170}
           xPos={530}
         ></Dropdown>
       )}
       <DirectoryButton
         key={4}
-        handleClick={toggleMostcommentHidden}
-        label="BÌNH LUẬN NHIỀU"
+        handleClick={toggleMostscoreHidden}
+        label="ĐIỂM CAO NHẤT"
       ></DirectoryButton>
-      {mostCommentHidden ? null : (
+      {mostScoreHidden ? null : (
         <Dropdown
           key="d3"
-          list={mostCommentList}
-          name="binh luan nhieu"
-          column={5}
+          list={mostscoreList}
+          name="most like"
+          column={3}
           yPos={170}
           xPos={660}
         ></Dropdown>
@@ -124,7 +130,20 @@ const Directory = ({
           xPos={810}
         ></Dropdown>
       )}
-      <DirectoryButton key={6} label="HỎI ĐÁP"></DirectoryButton>
+      <DirectoryButton key={6} handleClick={toggleSeasonHidden} label="SEASON"></DirectoryButton>
+      {
+        seasonHidden?null:
+        (
+          <Dropdown
+          key="d5"
+          list={seasonList}
+          name="season"
+          column={2}
+          yPos={170}
+          xPos={950}
+        ></Dropdown>
+        )
+      }
       <DirectoryButton
         key={7}
         handleClick={toggleTvMovieHidden}
@@ -132,7 +151,7 @@ const Directory = ({
       ></DirectoryButton>
       {tvMovieHidden ? null : (
         <Dropdown
-          key="d5"
+          key="d6"
           list={tvmovieList}
           name="tv movie"
           column={1}
@@ -147,22 +166,25 @@ const mapStateToProps = createStructuredSelector({
   categoryHidden: selectCategoryHidden,
   statusHidden: selectStatusHidden,
   mostViewHidden: selectMostviewHidden,
-  mostCommentHidden: selectMostcommentHidden,
+  mostScoreHidden: selectMostscoreHidden,
   yearHidden: selectYearHidden,
+  seasonHidden:selectSeasonHidden,
   tvMovieHidden: selectTvMovieHidden,
   categoryList: selectCategoryList,
   statusList: selectStatusList,
   mostviewList: selectMostviewList,
-  mostCommentList: selectMostcommentList,
+  mostscoreList: selectMostscoreList,
   yearList: selectYearList,
+  seasonList:selectSeasonList,
   tvmovieList: selectTvMovieList,
 });
 const mapDispatchToProps = (dispatch) => ({
   toggleCategoryHidden: () => dispatch(toggleCategoryHidden()),
   toggleStatusHidden: () => dispatch(toggleStatusHidden()),
   toggleMostviewHidden: () => dispatch(toggleMostviewHidden()),
-  toggleMostcommentHidden: () => dispatch(toggleMostcommentHidden()),
+  toggleMostscoreHidden: () => dispatch(toggleMostscoreHidden()),
   toggleYearHidden: () => dispatch(toggleYearHidden()),
+  toggleSeasonHidden:()=>dispatch(toggleSeasonHidden()),
   toggleTvMovieHidden: () => dispatch(toggleTvMovieHidden()),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Directory);

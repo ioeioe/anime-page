@@ -8,12 +8,14 @@ import {
   BoxCollectionList,
 } from "./box-collection.styles";
 
-
-import { selectCollections } from "../../redux/collection/collection.selector";
 import BoxCollectionItem from "../box-collection-item/box-collection-item.component";
 
-const BoxCollection = ({  collections }) => {
-  return (
+import { selectGallery } from "../../redux/anime-track/anime-track.selector";
+
+
+const BoxCollection = ({  gallery }) => {
+  console.log(gallery);
+  return typeof gallery==="object"?(
     <BoxCollectionContainer>
       <BoxCollectionHeader>
         <BoxCollectionField key="stt">STT</BoxCollectionField>
@@ -23,22 +25,21 @@ const BoxCollection = ({  collections }) => {
         <BoxCollectionField key="vote">đánh giá</BoxCollectionField>
         <BoxCollectionField key="delete">xoá</BoxCollectionField>
       </BoxCollectionHeader>
-      {/* <BoxCollectionList>
-        {userCollections.map((item, index) => (
+      <BoxCollectionList>
+        {Object.values(gallery).map((item, index) => (
           <BoxCollectionItem
             key={index}
             item={item}
             order={index + 1}
           ></BoxCollectionItem>
         ))}
-      </BoxCollectionList> */}
-    </BoxCollectionContainer>
-  );
+      </BoxCollectionList>
+    </BoxCollectionContainer>):null
+  
 };
 
 const mapStateToProps = createStructuredSelector({
-
-  collections: selectCollections,
+  gallery: selectGallery,
 });
 
 export default connect(mapStateToProps)(BoxCollection);

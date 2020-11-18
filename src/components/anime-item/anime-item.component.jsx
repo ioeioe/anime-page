@@ -1,9 +1,9 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { selectIndexOfItem } from "../../redux/collection/collection.selector";
+
 import {
   ItemContainer,
+  ItemImageContainer,
   ItemImage,
   ItemEpisode,
   ItemTitle,
@@ -11,13 +11,17 @@ import {
   ItemScore,
 } from "./anime-item.styles";
 
-const AnimeItem = ({ item, history,routeName }) => {
-  const { title, image_url, score, episodes,mal_id } = item;
+import PlayButton from '../play-button/play-button.component';
+
+
+const AnimeItem = ({ item, history }) => {
+  const { title, image_url, score, episodes,mal_id,routeName } = item;
   history.location.pathname = "/";
   return (
     <ItemContainer
        to={{
         pathname: `anime/${mal_id}/${routeName}`,
+        state:{item:item},
       }}
     >
       <ItemInfo>
@@ -26,9 +30,11 @@ const AnimeItem = ({ item, history,routeName }) => {
         </ItemEpisode>
         <ItemScore>{score}</ItemScore>
       </ItemInfo>
-
+      <ItemImageContainer>
       <ItemImage src={image_url} alt="image name"></ItemImage>
-
+      <PlayButton />
+      </ItemImageContainer>
+      
       <ItemTitle>
         {title.length < 15 ? title : title.slice(0, 15) + " ..."}
       </ItemTitle>

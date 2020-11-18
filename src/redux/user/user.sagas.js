@@ -1,4 +1,4 @@
-import { takeLatest, call, put, all } from "redux-saga/effects";
+import { takeLatest, call, put, all,select } from "redux-saga/effects";
 import store from '../store';
 import {
   createUserProfileDocument,
@@ -9,6 +9,9 @@ import {
 } from "../../firebase/firebase.utils";
 
 import { UserTypes } from "./user.types";
+import {selectCurrentUser} from './user.selector';
+
+import {pushGalleryToFirestore,clearGallery} from '../anime-track/anime-track.actions';
 
 import {
   SignUpSuccess,
@@ -48,7 +51,7 @@ export function* getSnapShotFromUserAuth(userAuth, additionalData) {
     );
     const snapShot = yield userRef.get();
     console.log(snapShot.data());
-    yield put(SignInSuccess({ id: snapShot.id, ...snapShot.data() }));
+    yield put(SignInSuccess( snapShot.data() ));
   } catch (error) {
     //"Tên đăng nhập hoặc mật khẩu không chính xác";
     yield put(SignInFailure(error.message));
@@ -101,13 +104,11 @@ export function* signUp({ payload: { firstName,lastName,userName, password, imag
     );
     const userId=user.uid;
     let imageUrl="";
-    //  yield createUserProfileDocument(user, 
-    //  { firstName,lastName,imageUrl },);
-    // if(imageAsFile!==''){
-    //    yield upLoadImageTask(imageAsFile,userId,userName,password);
-    // }
     if(imageAsFile!==''){
        imageUrl = yield call(upLoadImageTask,imageAsFile,userId,userName,password);
+    }
+    else{
+      imageUrl = "https://somoskudasai.com/wp-content/uploads/2020/10/sub4-13.jpg";
     }
     yield call(createUserProfileDocument,user,{firstName,lastName,imageUrl})
     yield put(EmailSignInStart({username:userName,password}));

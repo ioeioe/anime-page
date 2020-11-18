@@ -7,31 +7,53 @@ export const selectCollections = createSelector(
   [Collections],
   (data) => data.collections
 );
-export const selectViewRanking = createSelector(
+export const selectViewRating = createSelector(
   [Collections],
-  (data) => data.viewRanking
+  (data) => data.viewRating
 );
-export const selectScoreRanking = createSelector(
+export const selectScoreRating = createSelector(
   [Collections],
-  (data) => data.scoreRanking
+  (data) => data.scoreRating
 );
 
 export const isLoading = createSelector(
   [Collections],
   (data) => data.loading
 );
-export const isViewRankingloading = createSelector(
+export const isViewRatingloading = createSelector(
   [Collections],
-  (data) => data.viewRankingLoading
+  (data) => data.viewRatingLoading
 );
-export const isScoreRankingloading = createSelector(
+export const isScoreRatingloading = createSelector(
   [Collections],
-  (data) => data.scoreRankingLoading
+  (data) => data.scoreRatingLoading
 );
 export const selectSearchCollection = createSelector(
   [Collections],
   (data) => data.searchCollection
 );
+export const selectIncomingCollection = createSelector(
+  [Collections],
+  (data)=>data.incomingCollection
+)
+export const isIncomingloading = createSelector(
+  [Collections],
+  (data) => data.incomingLoading,
+);
+export const selectPreviousPage = createSelector(
+  [Collections],
+  (data)=>data.previousPage
+)
+
+export const selectFirstDocument = createSelector(
+  [Collections],
+  (data)=>data.firstDocument,
+)
+
+export const selectLastDocument = createSelector(
+  [Collections],
+  (data)=>data.lastDocument,
+)
 
 export const selectIndexOfItem = (item) =>
   createSelector([selectCollections], (data) => data.indexOf(item));

@@ -1,14 +1,11 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import React from "react";
+
 import { PageContainer } from "./sign-in-page.styles";
 
-import { hideRanking } from "../../redux/ranking/ranking.actions";
+
 import SignIn from "../../components/sign-in/sign-in.component";
 
-const SignInPage = ({ hideRanking }) => {
-  useEffect(() => {
-    hideRanking();
-  });
+const SignInPage = () => {
   return (
     <PageContainer>
       <SignIn />
@@ -16,8 +13,5 @@ const SignInPage = ({ hideRanking }) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  hideRanking: () => dispatch(hideRanking()),
-});
 
-export default connect(null, mapDispatchToProps)(SignInPage);
+export default SignInPage;

@@ -1,32 +1,29 @@
 import React, { useEffect, lazy, Suspense } from "react";
 import { connect } from "react-redux";
-import { Route, Switch, Redirect,withRouter } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
+import { createStructuredSelector } from "reselect";
+
 import "./App.css";
+
 import Header from "./components/header/header.component";
 import Directory from "./components/directory/directory.component";
 import ErrorBoundary from "./components/error-boundary/error-boundary.component";
-import { createStructuredSelector } from "reselect";
-import { selectCurrentUser } from "./redux/user/user.selector";
 import Spinner from "./components/spinner/spinner.component";
-import { selectAnnounceHidden } from "./redux/announce/announce.selector";
-import Announcement from './components/announcement/annoucement.component';
-//import HomePage from "./pages/homepage/homepage.component";
-// import OverviewPage from "./pages/overviewpage/overview.component";
-// import DetailPage from "./pages/detail-page/detail-page.component";
+import TopView from "./components/rating-frame/top-view.component";
+import TopLike from "./components/rating-frame/top-like.component";
+import Incoming from './components/incoming/incoming.component';
+ 
 
 // import SignUpPage from "./pages/sign-up-page/sign-up-page.component";
 // import SignInPage from "./pages/sign-in-page/sign-in-page.component";
 // import BoxPage from "./pages/box-page/box-page.component";
 import { RankingContainer } from "./pages/homepage/homepage.styles";
-
-import TopView from "./components/top-view/top-view.component";
-import TopLike from "./components/top-like/top-like.component";
-
-import { pushCollectionToStore } from "./redux/collection/collection.actions";
+import { selectCurrentUser } from "./redux/user/user.selector";
 import { CheckUserSession } from "./redux/user/user.actions";
-import { fetchCollectionPreviewStart } from "./redux/collection/collection.actions";
 import { toggleSearchHidden } from "./redux/search/search.actions";
 import { toggleDirectoryHidden } from "./redux/directory/directory.actions";
+// import {pushCollectionToStore} from './redux/collection/collection.actions';
+// import { pushGalleryToFirestore } from "./redux/anime-track/anime-track.actions";
 
 const HomePage = lazy(() => import("./pages/homepage/homepage.component"));
 const OverviewPage = lazy(() =>
@@ -42,49 +39,49 @@ const SignInPage = lazy(() =>
   import("./pages/sign-in-page/sign-in-page.component")
 );
 const BoxPage = lazy(() => import("./pages/box-page/box-page.component"));
-// const TopLike= lazy(()=>import("./components/top-like/top-like.component"));
-// const TopView = lazy(()=>import("./components/top-view/top-view.component"));
 const App = ({
   currentUser,
   toggleSearchHidden,
   toggleDirectoryHidden,
-  // fetchCollectionStart,
-  // checkUserSession,
   location,
-  // pushCollectionToStore,
+  checkUserSession
 }) => {
- 
   // useEffect(() => {
+  //   // const cleanup = () => {
+  //   //   if(currentUser)
+  //   //   {
+  //   //   pushGalleryToFirestore(currentUser.id);
+  //   //   }
+  //   // };
+  //   // window.addEventListener("beforeunload", cleanup);
+  //   // return () => {
+  //   //   window.removeEventListener("beforeunload", cleanup);
+  //   // };
+  //   // pushCollectionToStore();
   //   checkUserSession();
-  // }, [checkUserSession]);
-
+  // }, []);
   const handleClick = () => {
     toggleSearchHidden();
     toggleDirectoryHidden();
   };
-  const exclusionArray=[
-    '/dang-nhap',
-    '/dang-ki',
-  ]
+  const HeaderAndDirectoryExclude = ["/dang-nhap", "/dang-ki"];
+  const RatingExclude=["/dang-nhap","/dang-ki","/theo-doi"];
   return (
     <div className="appDiv">
-        {/* <Announcement /> */}
-        {exclusionArray.indexOf(location.pathname) < 0 && <Header/>}
-        {exclusionArray.indexOf(location.pathname) < 0 && <Directory/>}
-        
-      
-      
+      {HeaderAndDirectoryExclude.indexOf(location.pathname) < 0 && <Header />}
+      {HeaderAndDirectoryExclude.indexOf(location.pathname) < 0 && <Directory />}
+      {location.pathname==="/" &&<Incoming />}
       <div className="ComponentContainer" onClick={handleClick}>
-       
         <Switch>
           <ErrorBoundary>
             <Suspense fallback={<Spinner />}>
               <Route exact path="/" component={HomePage}></Route>
+              <Route path="/anime/:id/:title" component={DetailPage}></Route>
               <Route
                 path="/danh-sach/page/:pagenumber"
                 component={OverviewPage}
               ></Route>
-              <Route path="/anime/:id/:title" component={DetailPage}></Route>
+
               <Route
                 path="/the-loai/:genres/page/:pagenumber"
                 component={OverviewPage}
@@ -93,8 +90,20 @@ const App = ({
                 path="/tv-movie/:type/page/:pagenumber"
                 component={OverviewPage}
               ></Route>
+              <Route 
+                path="/most-view/:time/page/:pagenumber"
+                component={OverviewPage}
+                ></Route>
+                <Route 
+                path="/most-like/:time/page/:pagenumber"
+                component={OverviewPage}
+                ></Route>
               <Route
                 path="/nam/:year/page/:pagenumber"
+                component={OverviewPage}
+              ></Route>
+              <Route
+                path="/season/:season/page/:pagenumber"
                 component={OverviewPage}
               ></Route>
               <Route
@@ -112,16 +121,20 @@ const App = ({
                   currentUser ? <Redirect to="/"></Redirect> : <SignInPage />
                 }
               ></Route>
-              <Route exact path="/dang-ki"  render={() =>
+              <Route
+                exact
+                path="/dang-ki"
+                render={() =>
                   currentUser ? <Redirect to="/"></Redirect> : <SignUpPage />
-                }></Route>
-              <Route exact path="/bo-suu-tap" component={BoxPage}></Route>
+                }
+              ></Route>
+              <Route exact path="/theo-doi" component={BoxPage}></Route>
             </Suspense>
           </ErrorBoundary>
         </Switch>
         <RankingContainer>
-          <TopView></TopView>
-          <TopLike></TopLike>
+         {RatingExclude.indexOf(location.pathname) < 0 && <TopView />}
+         {RatingExclude.indexOf(location.pathname) < 0 && <TopLike />}
         </RankingContainer>
       </div>
     </div>
@@ -131,13 +144,11 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
 });
 
-
 const mapDispatchToProps = (dispatch) => ({
-  // fetchCollectionStart: () => dispatch(fetchCollectionPreviewStart()),
   toggleSearchHidden: () => dispatch(toggleSearchHidden()),
   toggleDirectoryHidden: () => dispatch(toggleDirectoryHidden()),
   checkUserSession: () => dispatch(CheckUserSession()),
-  // pushCollectionToStore: () => dispatch(pushCollectionToStore()),
+  // pushGalleryToFirestore: (userId) => dispatch(pushGalleryToFirestore(userId)),
+  // pushCollectionToStore:()=>dispatch(pushCollectionToStore()),
 });
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
-//export default App;

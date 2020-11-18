@@ -9,17 +9,14 @@ import {
   SearchItemEpisode,
 } from "./search-item.styles";
 import { selectIndexOfItem } from "../../redux/collection/collection.selector";
-const SearchItem = ({ item, history, index }) => {
-  const { image_url, title, episodes } = item;
-
-  const regex = /\s/gi;
+const SearchItem = ({ item }) => {
+  const { image_url, title, episodes,mal_id,routeName } = item;
   return (
     <SearchItemContainer
-      onClick={() =>
-        history.push(
-          `anime/${index}/${title.toLowerCase().replace(regex, "-")}`
-        )
-      }
+       to={{
+        pathname: `anime/${mal_id}/${routeName}`,
+        state:{item:item},
+      }}
     >
       <SearchItemImage src={image_url}></SearchItemImage>
       <SearchItemInfo>

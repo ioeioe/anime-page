@@ -13,16 +13,15 @@ import { selectAnnounceHidden } from "../../redux/announce/announce.selector";
 import {Announce} from '../../redux/announce/announce.selector';
 import { closingAnnounce } from "../../redux/announce/announce.actions";
 
-const Announcement = ({ announce,closingAnnounce }) => {
+const Announcement = ({ announce,closingAnnounce,hidden }) => {
     useEffect(() => {
     setTimeout(() => {
       closingAnnounce();
     }, 2900);
   }, []);
 
-  console.log(announce);
 
-  return (
+  return hidden?null:(
     <AnnouncementContainer>
       {
         announce.check?(
@@ -35,9 +34,7 @@ const Announcement = ({ announce,closingAnnounce }) => {
         src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRmGpXm0m7snxZexK2gBZpFl0GK4xFtbw188Q&usqp=CAU"
         alt="announce icon"
       ></AnnouncementImage>)
-      
-
-  }
+      }
       <AnnouncementInfo>
         <AnnouncementTitle>{announce.title}</AnnouncementTitle>
         <AnnouncementPara>{announce.para}</AnnouncementPara>

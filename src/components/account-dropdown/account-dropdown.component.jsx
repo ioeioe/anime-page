@@ -3,7 +3,10 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import {
   AccountDropdownContainer,
-  BoxCollectionView,
+  AccountDropdownItem,
+  AccountDropdownItemIcon,
+  AccountDropdownItemText,
+  AccountDropdownButton
 } from "./account-dropdown.styles";
 import CustomButton from "../custom-button/custom-button.component";
 import { SignOutStart } from "../../redux/user/user.actions";
@@ -16,10 +19,17 @@ const AccountDropdown = ({ SignOutStart, toggleAccountDropdown }) => {
 
   return (
     <AccountDropdownContainer>
-      <BoxCollectionView to={{ pathname: "/bo-suu-tap" }}>
-        Anime đã thêm
-      </BoxCollectionView>
-      <CustomButton onClick={handleClick}>Thoát khỏi tài khoản</CustomButton>
+       <AccountDropdownItem to={{ pathname: "/tai-khoan" }}>
+        <AccountDropdownItemIcon className="fa fa-user-circle"></AccountDropdownItemIcon>
+        <AccountDropdownItemText>Tài khoản</AccountDropdownItemText>
+      </AccountDropdownItem>
+      <AccountDropdownItem to={{ pathname: "/theo-doi" }}>
+               <AccountDropdownItemIcon className="fa fa-th-list"></AccountDropdownItemIcon>
+         <AccountDropdownItemText>Theo dõi</AccountDropdownItemText>
+      </AccountDropdownItem>    
+      <AccountDropdownButton onClick={handleClick}>
+        <AccountDropdownItemIcon className="fa fa-sign-out"></AccountDropdownItemIcon>       
+        Thoát</AccountDropdownButton>
     </AccountDropdownContainer>
   );
 };
